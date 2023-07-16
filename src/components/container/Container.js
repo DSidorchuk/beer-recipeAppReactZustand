@@ -10,7 +10,7 @@ const Container = () => {
    const navigate = useNavigate();
    const MAX_SIZE = 15;
 
-   const {recipes, toggleRecipe, selectedRecipes, deleteRecipes, loadFromPage, setRecipes, changeVisible, visible} = useRecipeStore(state => state);
+   const {recipes, toggleRecipe, selectedRecipes, deleteRecipes, loadFromPage, setRecipes, changeVisible, visible, setLoading, setRejected, status} = useRecipeStore(state => state);
    const qtyOfRecipes = recipes.length;
    
    const handleClick = (e, item) => {
@@ -27,9 +27,13 @@ const Container = () => {
 
    const loadMoreRecipes = () => {
       if(MAX_SIZE > qtyOfRecipes && qtyOfRecipes !== 0) {
+         setLoading();
          fetchRecipes(loadFromPage)
             .then(data => setRecipes(data))
-            .then(err => console.error(err))
+            .catch(err => {
+               setRejected();
+               console.error(err)
+            })
       }
    }
 
@@ -53,7 +57,7 @@ const Container = () => {
 
    return (
       <div className='container'>
-         {recipes.slice(0, MAX_SIZE).map((item, i) => {
+         {status === 'fulfilled' && recipes.slice(0, MAX_SIZE).map((item, i) => {
             const diff = visible - i; 
             return (
                   <Recipe 

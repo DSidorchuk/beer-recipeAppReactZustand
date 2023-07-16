@@ -7,8 +7,10 @@ export const useRecipeStore = create(devtools((set) => ({
    selectedRecipes: [],
    loadFromPage: 1,
    visible: 5,
+   status: 'pending', // fulfilled, loading, rejected
    setRecipes: (list) => set((state) => ({
       ...state,
+      status: 'fulfilled',
       recipes: [...state.recipes, ...list],
       loadFromPage: state.loadFromPage + 1,
    }), false, 'set-recipes'),
@@ -39,5 +41,13 @@ export const useRecipeStore = create(devtools((set) => ({
          }
       }
       return state;
-   }, false, 'change-visible')
+   }, false, 'change-visible'),
+   setLoading: () => set((state) => ({
+      ...state, 
+      status: 'loading'
+   }), false, 'recipe-loading'),
+   setRejected: () => set((state) => ({
+      ...state, 
+      status: 'rejected'
+   }), false, 'recipe-fetch-rejected'),
 })))

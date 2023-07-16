@@ -8,13 +8,17 @@ import { useRecipeStore } from '../../store';
 import { fetchRecipes } from '../../api/fetchRecipes';
 
 function App() {
-  const {recipes, setRecipes, loadFromPage} = useRecipeStore(state => state);
+  const {recipes, setRecipes, loadFromPage, setLoading, setRejected} = useRecipeStore(state => state);
 
    useEffect(() => {
       if(recipes.length === 0) {
+        setLoading();
          fetchRecipes(loadFromPage)
             .then(data => setRecipes(data))
-            .catch(err => console.error(err))
+            .catch(err => {
+              setRejected();
+              console.error(err);
+            })
       }
    }, [])
 
